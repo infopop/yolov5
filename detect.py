@@ -1,10 +1,12 @@
 import argparse
 import time
 from pathlib import Path
+import os
 
 import cv2
 import torch
 import torch.backends.cudnn as cudnn
+os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 from models.experimental import attempt_load
 from utils.datasets import LoadStreams, LoadImages
@@ -131,9 +133,18 @@ def detect(weights='yolov5s.pt',  # model.pt path(s)
                     if save_img or save_crop or view_img:  # Add bbox to image
                         c = int(cls)  # integer class
                         label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
-                        plot_one_box(xyxy, im0, label=label, color=colors(c, True), line_thickness=line_thickness)
-                        if save_crop:
-                            save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
+                        print('label', label)
+                        
+                        if label.find('person') != -1:
+                            label = 'Kai is punching a Punching Bag'
+                            plot_one_box(xyxy, im0, label=label, color=colors(c, True), line_thickness=line_thickness)
+                            if save_crop:
+                                save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
+                        else:
+                            print('not a person')
+                            
+                        
+
 
             # Print time (inference + NMS)
             print(f'{s}Done. ({t2 - t1:.3f}s)')
