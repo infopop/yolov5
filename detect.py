@@ -19,10 +19,10 @@ from utils.torch_utils import select_device, load_classifier, time_synchronized
 @torch.no_grad()
 def detect(weights='yolov5s.pt',  # model.pt path(s)
            source='data/images',  # file/dir/URL/glob, 0 for webcam
-           imgsz=640,  # inference size (pixels)
-           conf_thres=0.25,  # confidence threshold
-           iou_thres=0.45,  # NMS IOU threshold
-           max_det=1000,  # maximum detections per image
+           imgsz=1280,  # inference size (pixels)
+           conf_thres=0.7,  # confidence threshold
+           iou_thres=0.7,  # NMS IOU threshold
+           max_det=1,  # maximum detections per image
            device='',  # cuda device, i.e. 0 or 0,1,2,3 or cpu
            view_img=False,  # show results
            save_txt=False,  # save results to *.txt
@@ -36,7 +36,7 @@ def detect(weights='yolov5s.pt',  # model.pt path(s)
            project='runs/detect',  # save results to project/name
            name='exp',  # save results to project/name
            exist_ok=False,  # existing project/name ok, do not increment
-           line_thickness=3,  # bounding box thickness (pixels)
+           line_thickness=2,  # bounding box thickness (pixels)
            hide_labels=False,  # hide labels
            hide_conf=False,  # hide confidences
            half=False,  # use FP16 half-precision inference
@@ -134,16 +134,16 @@ def detect(weights='yolov5s.pt',  # model.pt path(s)
                         c = int(cls)  # integer class
                         label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
                         print('label', label)
-                        
+
                         if label.find('person') != -1:
-                            label = 'Kai is punching a Punching Bag'
+                            label = 'Kai is doing pull-ups.'
                             plot_one_box(xyxy, im0, label=label, color=colors(c, True), line_thickness=line_thickness)
                             if save_crop:
                                 save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
                         else:
                             print('not a person')
-                            
-                        
+
+
 
 
             # Print time (inference + NMS)
@@ -188,9 +188,9 @@ if __name__ == '__main__':
     parser.add_argument('--weights', nargs='+', type=str, default='yolov5s.pt', help='model.pt path(s)')
     parser.add_argument('--source', type=str, default='data/images', help='file/dir/URL/glob, 0 for webcam')
     parser.add_argument('--imgsz', '--img', '--img-size', type=int, default=640, help='inference size (pixels)')
-    parser.add_argument('--conf-thres', type=float, default=0.25, help='confidence threshold')
-    parser.add_argument('--iou-thres', type=float, default=0.45, help='NMS IoU threshold')
-    parser.add_argument('--max-det', type=int, default=1000, help='maximum detections per image')
+    parser.add_argument('--conf-thres', type=float, default=0.7, help='confidence threshold')
+    parser.add_argument('--iou-thres', type=float, default=0.7, help='NMS IoU threshold')
+    parser.add_argument('--max-det', type=int, default=1, help='maximum detections per image')
     parser.add_argument('--device', default='', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
     parser.add_argument('--view-img', action='store_true', help='show results')
     parser.add_argument('--save-txt', action='store_true', help='save results to *.txt')
